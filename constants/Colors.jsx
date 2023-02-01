@@ -1,0 +1,17 @@
+export default {
+    primary: '#222631',
+    textColor: '#404040',
+    bg: '#f6f6f6',
+    white: '#fff',
+    faded: 'rgba(255,255,255,.6)',
+    green: 'green',
+    red: 'red',
+    yellow: '#febd2a',
+    grad1:'#f3f7ea',
+    grad2:'#bfe1e3',
+    blck:'#222631',
+    grey:"#999",
+    redGradient:{left:'#ff7172',right:'#cf0000'},
+    greenGradient:{left:'#00a752',right:'#006732'},
+    yellowGradient:{left:'#f5ff00',right:'#ffc600'},
+}
