@@ -18,15 +18,18 @@ export default function Results(props) {
   let overall = 0;
   data.forEach(r=>{
     let {marks,maxMarks} = r
-    let percent = Math.floor((marks/maxMarks)*100)
-    overall = overall+percent
+    if(marks !== 'absent'){
+      let percent = Math.floor((marks/maxMarks)*100)
+      overall = overall+percent
+    }
   })
-  let final = overall/data.length
+  let final = overall/data.filter(a=>a.marks !== 'absent').length
   function render(r){
     let {item,index} = r
     let {title,subjectID,examDate,marks,marksType,maxMarks} = item
     let sub = courses.find(e=>e.id == subjectID).name
-    marks = parseInt(marks)
+    let absent = marks == 'absent' ? true : false
+    marks = marks !== 'absent' ? parseInt(marks) : 0
     let percent = Math.floor((marks/maxMarks)*100)
     let bg = Colors.green
     let gradient = Colors.greenGradient
@@ -42,7 +45,7 @@ export default function Results(props) {
     if(marksType == 'cgpa'){mr = 'CGPA'}
     let date = setNum(examDate)
     return(
-      <Attendance_bar head={sub} bg={bg} stat={`${marks}`} lg colors={gradient} main={Colors.white} text={`${title} | ${mr}`} txt2={`${date}`} txt3={`/ ${maxMarks}`}/>
+      <Attendance_bar head={sub} bg={absent ? Colors.yellow : bg} stat={`${absent ? 'Absent' : marks}`} lg colors={absent ? Colors.yellowGradient : gradient} main={Colors.white} text={`${title} | ${mr}`} txt2={`${date}`} txt3={absent ? '' : `/ ${maxMarks}`}/>
     )
   }
   return (

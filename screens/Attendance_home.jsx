@@ -15,6 +15,9 @@ export default function Attendance_home({navigation}) {
     let attn = attendance.filter(e=>e.subject == id)
     let pr = attn.filter(e=>e.status == 'present')
     let attn_percent = Math.floor((pr.length/attn.length)*100)
+    if(isNaN(attn_percent)){
+      attn_percent = '0'
+    }
     return(
       <Attendance_bar head={name} bg={attn_percent > 50 ? Colors.green : Colors.red} stat={`${attn_percent}%`} fun={()=>{navigation.navigate('attendance_view',{attn,name})}} lg colors={attn_percent > 50 ? Colors.greenGradient:Colors.redGradient} main={Colors.white}/>
 

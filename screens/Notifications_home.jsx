@@ -5,14 +5,16 @@ import Style from '../styles/Style'
 import { LG_full } from '../components/LG'
 import { LongBox } from '../components/Box'
 import { useSelector } from 'react-redux'
+import { setNum } from '../database/functions'
 
 export default function Notifications_home({navigation}) {
   let user = useSelector(state=>state.user)
   let {notifications} = user
   const renderNotice = (item)=>{
     let notice = item.item
+    let d = setNum(notice.date)
     return(
-      <LongBox heading={notice.title} text={`${notice.by} | Date: ${notice.date}`} fun={()=>{navigation.navigate('notification',{notice})}}/>
+      <LongBox heading={notice.title} text={`${notice.by} | Date: ${d}`} fun={()=>{navigation.navigate('notification',{notice})}}/>
     )
   }
   return (

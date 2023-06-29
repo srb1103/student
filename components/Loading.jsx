@@ -18,7 +18,7 @@ export default function Loader(){
                 <MotiView from={{opacity:.6,scale:1}} animate={{opacity:0,scale:2.5}} transition={{type:'timing',loop:true,repeatReverse:false,duration:2000,easing:Easing.out(Easing.ease),delay:index*400}} key={index} style={[StyleSheet.absoluteFillObject,styles.dot]}/>
               )
             })}
-            <Image source={require('../assets/icon.png')} style={styles.logo}/>
+            <Image source={require('../assets/logo_dark.png')} style={styles.logo}/>
           </MotiView>
       </View>
     )
@@ -26,6 +26,6 @@ export default function Loader(){
 
 const styles = StyleSheet.create({
     dot:{backgroundColor:Colors.white,height:RFValue(100),width:RFValue(100),borderRadius:80,alignItems:'center',justifyContent:'center'},
-    logo:{height:RFValue(65),resizeMode:'contain'},
+    logo:{height:RFValue(25),resizeMode:'contain'},
     center:{zIndex:2}
 })

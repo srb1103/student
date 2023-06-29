@@ -10,6 +10,7 @@ import Style from '../styles/Style'
 import TopBar from '../components/TopBar'
 import { RFValue } from 'react-native-responsive-fontsize'
 import { addApplication } from '../store/action'
+import Animate from '../screens/Animation'
 
 const UPDATE = 'UPATE'
 const stateReducer = (state,action)=>{
@@ -23,9 +24,10 @@ const stateReducer = (state,action)=>{
 export default function App_form(props){
     let {navigation,route} = props
     let user = useSelector(state=>state.user)
-    let {id,instituteID} = user.user_detail
+    let {id,instituteID,name} = user.user_detail
+    let [success,setSuccess] = useState(false)
     let {fun} = route.params
-    let {session} = user
+    let {session,iToken} = user
     let sesID = session.id
     let dispatch = useDispatch()
     let [loading,setLoading] = useState(false)
@@ -36,6 +38,19 @@ export default function App_form(props){
     const handleChange = useCallback((name,value)=>{
         dispatchState({type:UPDATE,name,value})
     },[dispatchState])
+    const sendNotif = async(data)=>{
+        let {subject} = data
+        await fetch('https://exp.host/--/api/v2/push/send',{
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                to: iToken,
+                title: `${name} sent a leave application`,
+                body: `${subject}`,
+                data:{type:'application',screen:'application',data}
+            }),
+        })
+    }
     const submit = async()=>{
         setLoading(true)
         let {subject,message} = state
@@ -45,15 +60,21 @@ export default function App_form(props){
             try{
                 let res = await addDoc(collection(db,'applications'),{studentID:id,instituteID,subject,application:message,status:'pending',date:newD,message:'',session:sesID})
                 let app_id = res.id
-                let obj = {id:app_id,subject,application:message,date:newD,status:'pending',message:''}
+                let obj = {id:app_id,subject,application:message,date:newD,status:'pending',message:'',studentID:id}
+                if(iToken){
+                    await sendNotif(obj)
+                }
                 dispatch(addApplication(obj))
                 fun(obj)
-                navigation.goBack()
+                setSuccess(true)
             }catch(err){console.log(err),setLoading(false)}
         }else{
             Alert.alert('Error','All fields are required',[{text:'Okay'}])
             setLoading(false)
         }
+    }
+    if(success){
+        return <Animate text={`Dear ${name}, your leave application has been sent successfully.`} fun={()=>navigation.goBack()}/>
     }
     return(
         <View style={Style.page}>

@@ -2,14 +2,14 @@
   "expo": {
     "name": "HIDA",
     "slug": "HIDA",
-    "version": "1.0.0",
+    "version": "11.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "cover",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#f3f7ea"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -17,19 +17,24 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    
     "ios": {
-      "bundleIdentifier": "kotcode.hida.ios",
-      "buildNumber": "1.0.0",
+      "bundleIdentifier": "in.kotcode.hida",
+      "buildNumber": "11.0.1",
       "supportsTablet": true
     },
     "android": {
-      "package": "kotcode.hida.android",
-      "versionCode": 1,
+      "package": "in.kotcode.hida",
+      "googleServicesFile": "./google-services.json",
+      "versionCode": 1101,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "backgroundColor": "#f3f7ea"
       }
     },
+    "plugins": [
+      "@react-native-firebase/app"
+    ],
     "web": {
       "favicon": "./assets/favicon.png"
     },

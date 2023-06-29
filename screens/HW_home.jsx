@@ -8,7 +8,7 @@ import Colors from '../constants/Colors'
 import { LongBox } from '../components/Box'
 import { RFValue } from 'react-native-responsive-fontsize'
 import { useCallback } from 'react'
-import { setNum } from '../database/functions'
+import { setNum,makeDate } from '../database/functions'
 import InputField from '../components/InputField'
 
 const FILTER = 'FILTER'
@@ -28,6 +28,13 @@ export default function HW_home(props){
     let {navigation} = props
     let user = useSelector(state=>state.user)
     let {homework,courses} = user
+    homework.sort(function(a,b){
+        let d1 = a.date
+        let d2 = b.date
+        d1 = makeDate(d1)
+        d2 = makeDate(d2)
+        return d2-d1;
+    })
     let d = new Date()
     let [srch,setSrch] = useState('')
     let date = `${d.getDate()}-${d.getMonth()+1}-${d.getFullYear()}` 
@@ -43,7 +50,6 @@ export default function HW_home(props){
     function render(s){
         let {item} = s
         let {title,subjectID,date,description} = item
-        let gradient = Colors.greenGradient
         date = setNum(date)
         let subject = courses.find(e=>e.id == subjectID).name
         return(
@@ -70,7 +76,7 @@ export default function HW_home(props){
                 <FlatList data={state.today} keyExtractor={(item,index)=>index.toString()} showsVerticalScrollIndicator={false} overScrollMode='never' renderItem={render}/>
             </View>
             : <View>
-                <InputField val={srch} placeholder='Search date...' name='srch' onChangeFun={handleSrch} />
+                <InputField val={srch} placeholder='Search date (DD-MM-YYYY)' name='srch' onChangeFun={handleSrch} />
                 <View style={{height:15}}/>
                 <FlatList data={state.previous} keyExtractor={(item,index)=>index.toString()} showsVerticalScrollIndicator={false} overScrollMode='never' renderItem={render}/>
             </View>}

@@ -5,13 +5,16 @@ import IonIcon from 'react-native-vector-icons/Ionicons'
 import Colors from '../constants/Colors'
 
 export default function TopBar(props) {
-    const {icon, fun, text} = props
+    const {icon, fun, text,txt2} = props
   return (
     <View style={styles.pageHead}>
         <TouchableOpacity activeOpacity={.7} onPress={fun} style={styles.menuBar_wrap}>
             <IonIcon name={icon} style={styles.menuBar}></IonIcon>
         </TouchableOpacity>
-        <Text style={styles.pageHeading}>{text}</Text>
+        <View>
+            <Text style={{...styles.pageHeading,marginTop:txt2?-8:0}}>{text}</Text>
+            {txt2 && <Text style={styles.pageHeading1}>{txt2}</Text>}
+        </View>
     </View>
   )
 }
@@ -20,12 +23,13 @@ const styles = StyleSheet.create({
     pageHead:{
         position: 'relative',
         padding: RFValue(10),
-        alignItems:'flex-start',
+        alignItems:'center',
         flexDirection: 'row',
         justifyContent:'center',
         paddingTop:RFValue(5),
         marginBottom:10
     },
+    pageHeading1:{color:'grey',fontSize:RFValue(11),marginTop:-5},
     pageHeading:{
         textAlign:'center',
         fontSize: RFValue(15),

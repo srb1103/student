@@ -12,8 +12,9 @@ export default function Courses({navigation}) {
     let subject = item.item
     let {id,name} = subject
     let tchr = teachers.find(e=>e.subjects_allotted.includes(id))
+    let tchr_name = tchr ? tchr.name : ''
     return(
-      <LongBox icon="book-outline" heading={name} text={`Teacher: ${tchr.name}`} fun={()=>{navigation.navigate('course_view',{subject})}}/>
+      <LongBox icon="book-outline" heading={name} text={`Teacher: ${tchr_name}`} fun={()=>{navigation.navigate('course_view',{subject})}}/>
     )
   }
   return (

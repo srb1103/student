@@ -20,13 +20,15 @@ export default function NavBar(props) {
             </View>
             <ScrollView overScrollMode='never'>
                 <NavItem icon="home" text="Home" fun={()=>{navigation.navigate('homepage',{screen:'home'})}}/>
-                <NavItem icon="bar-chart" text="Results" fun={()=>{navigation.navigate('res')}}/>
-                <NavItem icon="newspaper" text="Assignments" fun={()=>{navigation.navigate('assign')}}/>
+                <NavItem icon="bar-chart" text="Results" fun={()=>{navigation.navigate('res',{screen:'results'})}}/>
+                <NavItem icon="newspaper" text="Assignments" fun={()=>{navigation.navigate('assign',{screen:'assignments'})}}/>
                 <NavItem icon="time" text="Time Table" fun={()=>{navigation.navigate('homepage',{screen:'tt_main'})}}/>
-                <NavItem icon="person" text="Profile" fun={()=>{navigation.navigate('profile')}}/>
                 <NavItem icon="book" text="Courses" fun={()=>{navigation.navigate('homepage',{screen:'courses'})}}/>
-                <NavItem icon="document-text" text="Homework" fun={()=>{navigation.navigate('homework')}}/>
+                <NavItem icon="document-text" text="Homework" fun={()=>{navigation.navigate('homework',{screen:'hw_home'})}}/>
                 <NavItem icon="information-circle" text="Inquiry" fun={()=>{navigation.navigate('inq')}}/>
+                <NavItem icon="document" text="Leave applications" fun={()=>{navigation.navigate('app')}}/>
+                <NavItem icon="book" text="Faculty" fun={()=>{navigation.navigate('faculty')}}/>
+                <NavItem icon="person" text="Profile" fun={()=>{navigation.navigate('profile')}}/>
             </ScrollView>
         </View>
     )

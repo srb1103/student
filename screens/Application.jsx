@@ -5,31 +5,24 @@ import Style from '../styles/Style'
 import TopBar from '../components/TopBar'
 import { RFValue } from 'react-native-responsive-fontsize'
 import { LG_full } from '../components/LG'
-import { deleteDoc,doc } from 'firebase/firestore'
-import { db } from '../database/firebase-config'
-import { useDispatch } from 'react-redux'
-import { deleteApplication } from '../store/action'
+import {useSelector } from 'react-redux'
 import { setNum } from '../database/functions'
 
 export default function Application(props){
     const {navigation, route} = props
     let [loading,setLoading] = useState(false)
     let {data,deleteFun} = route.params
-    let {id,subject,message,application,status,date} = data
+    let u = useSelector(state=>state.user)
+    let {applications} = u
+    let id = data
+    let app = applications.find(e=>e.id == id)
+    let {subject,message,application,status,date} = app
     date = setNum(date)
-    let dispatch = useDispatch()
     function showAlert(){
-        Alert.alert('Are you sure?','Do you really want to delete this application?',[{text:'No'},{text:'Yes, delete',onPress:handleDelete}])
-    }
-    let handleDelete = async()=>{
-        setLoading(true)
-        try{
-            await deleteDoc(doc(db,'applications',id))
-            dispatch(deleteApplication(id))
-            setLoading(false)
-            deleteFun(id)
+        Alert.alert('Are you sure?','Do you really want to delete this application?',[{text:'No'},{text:'Yes, delete',onPress:()=>{
+            deleteFun(id);
             navigation.goBack()
-        }catch(err){console.warn(err),setLoading(false)}
+        }}])
     }
     return(
         <View style={Style.page}>

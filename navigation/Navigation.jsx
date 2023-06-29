@@ -18,26 +18,26 @@ import Attendance from '../screens/Attendance'
 import Attendance_semester from '../screens/Attendance_semester'
 import Courses_home from '../screens/Courses'
 import Course from '../screens/Course'
+import Chapter from '../screens/Chapter'
 import { useDispatch, useSelector } from 'react-redux'
 import { createTable, findUserID } from '../database/sql'
 import {getAuth, signInWithEmailAndPassword} from 'firebase/auth'
 import Login from '../screens/Login'
 import { usrCr } from '../database/firebase-config'
-import { LG_full } from '../components/LG'
-import Colors from '../constants/Colors'
 import { setUserAction } from '../store/action'
 import Result_session from '../screens/Result_session'
 import ChangePassword from '../screens/Change_password'
 import Leave_home from '../screens/Leave_home'
 import App_form from '../screens/Application_form'
 import Application from '../screens/Application'
-import { RFValue } from 'react-native-responsive-fontsize'
 import HW_home from '../screens/HW_home'
 import HW_view from '../screens/HW_view'
 import Loader from '../components/Loading'
 import Inq_form from '../screens/Inquiry_form'
 import Inquiry from '../screens/Inquiry'
 import Inquiry_home from '../screens/Inquiries'
+import Faculty from '../screens/Faculty'
+import { fetch_data } from '../database/functions'
 
 const HomeStack = createStackNavigator()
 const ResultStack = createStackNavigator()
@@ -46,6 +46,7 @@ const AttendanceStack = createStackNavigator()
 const ProfileStack = createStackNavigator()
 const HWStack = createStackNavigator()
 const InqStack = createStackNavigator()
+const AppStack = createStackNavigator()
 const DrawerStack = createDrawerNavigator()
 
 const HomeNav = ()=>(
@@ -58,6 +59,7 @@ const HomeNav = ()=>(
         <HomeStack.Screen name="notification" component={Notification} options={()=>({headerShown: false})}/>
         <HomeStack.Screen name="courses" component={Courses_home} options={()=>({headerShown: false})}/>
         <HomeStack.Screen name="course_view" component={Course} options={()=>({headerShown: false})}/>
+        <HomeStack.Screen name="chapter" component={Chapter} options={()=>({headerShown: false})}/>
         <HomeStack.Screen name="tt_main" component={TimeTable} options={()=>({headerShown: false})}/>
 
     </HomeStack.Navigator>
@@ -107,10 +109,17 @@ const ProfNav = ()=>(
         }}>
         <ProfileStack.Screen name='profile_main' component={Profile} options={()=>({headerShown:false})}/>
         <ProfileStack.Screen name='change_password' component={ChangePassword} options={()=>({headerShown:false})}/>
-        <ProfileStack.Screen name='applications' component={Leave_home} options={()=>({headerShown:false})}/>
-        <ProfileStack.Screen name='application' component={Application} options={()=>({headerShown:false})}/>
-        <ProfileStack.Screen name='app_form' component={App_form} options={()=>({headerShown:false})}/>
     </ProfileStack.Navigator>
+)
+const AppNav = ()=>(
+    <AppStack.Navigator
+        screenOptions={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+        }}>
+        <AppStack.Screen name='applications' component={Leave_home} options={()=>({headerShown:false})}/>
+        <AppStack.Screen name='application' component={Application} options={()=>({headerShown:false})}/>
+        <AppStack.Screen name='app_form' component={App_form} options={()=>({headerShown:false})}/>
+    </AppStack.Navigator>
 )
 const InqNav = ()=>(
     <InqStack.Navigator
@@ -133,6 +142,8 @@ function Nav(){
             <DrawerStack.Screen name="profile" component={ProfNav} options={()=>({headerShown:false})}/>
             <DrawerStack.Screen name="homework" component={HWNav} options={()=>({headerShown:false})}/>
             <DrawerStack.Screen name="inq" component={InqNav} options={()=>({headerShown:false})}/>
+            <DrawerStack.Screen name="app" component={AppNav} options={()=>({headerShown:false})}/>
+            <DrawerStack.Screen name="faculty" component={Faculty} options={()=>({headerShown:false})}/>
         </DrawerStack.Navigator>
     )
 }
@@ -159,9 +170,16 @@ export default function MainNav(){
                 let data = uid.rows._array[0]
                 if(data.userID){
                     let id = data.userID
-                    data.id = id
-                    data.img_url = data.img
-                    update(data)
+                    let isTh = await fetch_data('students')
+                    let isThere = isTh.find(e=>e.id == id)
+                    if(isThere){
+                        data.id = id
+                        data.img_url = data.img
+                        update(data)
+                    }else{
+                        setLoading(false)
+                        console.log('no student in the database')
+                    }
                 }
             }else{setLoading(false);console.log('empty sql')}
         }catch(err){console.log(err);setLoading(false)}

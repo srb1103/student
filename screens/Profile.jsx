@@ -26,6 +26,7 @@ let {height} = Dimensions.get('window')
 export default function Profile({navigation}) {
   let user = useSelector(state=>state.user)
   let usr = user.user_detail
+  let class_name = user.class_name
   const [state,dispatchState] = useReducer(stateReducer,{
     url: usr.img
   })
@@ -66,16 +67,15 @@ export default function Profile({navigation}) {
       <LG/>
         <View style={{...styles.div,marginTop:-RFValue(30)}}>
             <Text style={styles.name}>{usr.name}</Text>
-            <Text style={styles.desc}>{`Admission No: ${usr.admissionNo}`}</Text>
-            <Text style={styles.desc}>{`Class: 10, Roll No: ${usr.rollNo}`}</Text>
+            <Text style={styles.desc}>{`Class: ${class_name}`}</Text>
+            <Text style={styles.desc}>{`Admission No: ${usr.admissionNo}, Roll No: ${usr.rollNo}`}</Text>
             <Text style={styles.desc}><IonIcon name="call"/> {`${usr.phone}`}</Text>
             <Text style={styles.desc}><IonIcon name="mail"/> {`${usr.email}`}</Text>
             <Text style={styles.desc}><IonIcon name="location"/> {`${usr.address}`}</Text>
         </View>
         <View style={{flexDirection:'row',width:'90%'}}>
-          <Box text="Leave application" icon="document-outline" left fun={()=>navigation.navigate('applications')} width='33%'/>
-          <Box text="Change Password" icon="key-outline" fun={()=>navigation.navigate('change_password')} width='33%'/>
-          <Box text="Log out" icon="log-out-outline" right fun={showAlert} width='33%'/>
+          <Box text="Change Password" icon="key-outline" left fun={()=>navigation.navigate('change_password')} width='50%'/>
+          <Box text="Log out" icon="log-out-outline" right fun={showAlert} width='50%'/>
         </View>
       </View>
     </View>

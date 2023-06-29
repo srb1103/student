@@ -3,15 +3,22 @@ import ReduxThunk from 'redux-thunk'
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, combineReducers} from 'redux'
 import user from './store/reducer'
-// import Login from './screens/Login';
-import NavBar from './screens/NavBar';
-import Home from './screens/Home'
 import MainNav from './navigation/Navigation';
 import { useFonts, Poppins_300Light, Poppins_400Regular, Poppins_500Medium, Poppins_600SemiBold, Poppins_700Bold, Poppins_800ExtraBold } from "@expo-google-fonts/poppins";
 import Style from './styles/Style';
 import Colors from './constants/Colors';
 import { createTable } from './database/sql';
+import * as Notifications from 'expo-notifications';
 
+Notifications.setNotificationHandler({
+  handleNotification: async()=>{
+    return{
+      shouldShowAlert:true,
+      shouldPlaySound:true,
+      shouldSetBadge:true,
+    }
+  }
+})
 createTable().then(()=>{console.log('table created')}).catch((err)=>console.log('error'))
 const rootReducer = combineReducers({
   user: user

@@ -1,4 +1,4 @@
-import { DELETE_APPLICATION, LOGOUT, NEW_APPLICATION, SET_USER, UPDATE_IMG,SET_DATA,NEW_INQUIRY,DELETE_INQUIRY } from "./action"
+import { DELETE_APPLICATION, LOGOUT, NEW_APPLICATION, SET_USER, UPDATE_IMG,SET_DATA,NEW_INQUIRY,DELETE_INQUIRY,SET_RESPONSE,ADD_ASSIGNMENT,ADD_NOTIF, ADD_HOMEWORK, SET_APPRES } from "./action"
 
 let initialState = {
     user_detail:{
@@ -24,6 +24,7 @@ let initialState = {
     assignments:[],
     applications:[],
     iType:'',
+    iToken:null,
     session:{id:'',name:''},
     iSessions:[],
     homework:[],
@@ -35,9 +36,9 @@ export default (state=initialState,action)=>{
         case SET_USER:
             let {id,name,phone,email,guardian,instituteID,address,classId,img_url,rollNo,admissionNo} = action.user
             let user = {id,name,admissionNo,rollNo,instituteID,classId,address,phone,email,guardian,img:img_url}
-            let {itype,session,sessions} = action
+            let {itype,session,sessions,iToken} = action
             let obj = {id:session.id,name:session.title}
-            return{...state,user_detail:user,session:obj,iType:itype,iSessions:sessions}
+            return{...state,user_detail:user,session:obj,iType:itype,iSessions:sessions,iToken}
         case SET_DATA:
             user = state.user_detail
             rollNo = user.rollNo
@@ -52,8 +53,8 @@ export default (state=initialState,action)=>{
                 apps.push(obj)
             })
             inquiries.forEach(a=>{
-                let {id,title,inquiry,response,date,subjectID,status} = a
-                let obj = {id,title,inquiry,response,date,subjectID,status}
+                let {id,title,inquiry,response,date,subjectID,status,sender} = a
+                let obj = {id,title,inquiry,response,date,subjectID,status,sender}
                 inqs.push(obj)
             })
             attendance.forEach(a=>{
@@ -128,6 +129,49 @@ export default (state=initialState,action)=>{
             appl = action.data
             app_list = app_list.concat(appl)
             return{...state,inquiries:app_list}
+        case ADD_NOTIF:
+            let notif = action.data
+            let notifs = state.notifications
+            let isThere = notifs.find(e=>e.id == notif.id)
+            if(!isThere){
+                notifs = notifs.concat(notif)
+            }
+            return{...state,notifications:notifs}
+        case ADD_ASSIGNMENT:
+            notif = action.data
+            notifs = state.assignments
+            isThere = notifs.find(e=>e.id == notif.id)
+            if(!isThere){
+                notifs = notifs.concat(notif)
+            }
+            return{...state,assignments:notifs}
+        case ADD_HOMEWORK:
+            notif = action.data
+            notifs = state.homework
+            isThere = notifs.find(e=>e.id == notif.id)
+            if(!isThere){
+                notifs = notifs.concat(notif)
+            }
+            return{...state,homework:notifs}
+        case SET_RESPONSE:
+            let res = action.data
+            id = res.id
+            let {message} = res
+            app_list = state.inquiries
+            let ind = app_list.findIndex(e=>e.id == id)
+            app_list[ind].response = message
+            app_list[ind].status = 'responded'
+            return{...state,inquiries:app_list}
+        case SET_APPRES:
+            res = action.data
+            app_list = state.applications
+            let {status} = res
+            message = res.message
+            id = res.id
+            ind = app_list.findIndex(e=>e.id == id)
+            app_list[ind].messsage = message
+            app_list[ind].status = status
+            return {...state,applications:app_list}
     }
     return state
 }

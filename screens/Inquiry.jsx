@@ -1,35 +1,34 @@
-import React, {useState} from 'react'
-import {View, Text, StyleSheet,TouchableOpacity,ActivityIndicator, Alert} from 'react-native'
+import React from 'react'
+import {View, Text, StyleSheet,TouchableOpacity,Image, Alert} from 'react-native'
 import Colors from '../constants/Colors'
 import Style from '../styles/Style'
 import TopBar from '../components/TopBar'
 import { RFValue } from 'react-native-responsive-fontsize'
 import { LG_full } from '../components/LG'
-import { deleteDoc,doc } from 'firebase/firestore'
-import { db } from '../database/firebase-config'
-import { useDispatch } from 'react-redux'
-import { deleteInquiry } from '../store/action'
+import { useSelector } from 'react-redux'
 import { setNum } from '../database/functions'
 
 export default function Inquiry(props){
     const {navigation, route} = props
-    let [loading,setLoading] = useState(false)
     let {data,deleteFun} = route.params
-    let {id,title,response,inquiry,status,date,subject} = data
-    date = setNum(date)
-    let dispatch = useDispatch()
-    function showAlert(){
-        Alert.alert('Are you sure?','Do you really want to delete this inquiry?',[{text:'No'},{text:'Yes, delete',onPress:handleDelete}])
+    let {id} = data
+    let u = useSelector(state=>state.user)
+    let {img} = u.user_detail
+    let {courses,inquiries,teachers} = u
+    let inq = inquiries.find(e=>e.id == id)
+    let {title,response,inquiry,status,date,subjectID,sender} = inq
+    let subject = courses.find(e=>e.id == subjectID).name
+    let timg = 'https://i.pngimg.me/thumb/f/720/comvecteezy420303.jpg'
+    let teacher = teachers.find(e=>e.id == sender)
+    if(teacher){
+        timg = teacher.img_url
     }
-    let handleDelete = async()=>{
-        setLoading(true)
-        try{
-            await deleteDoc(doc(db,'inquiries',id))
-            dispatch(deleteInquiry(id))
-            setLoading(false)
-            deleteFun(id)
+    date = setNum(date)
+    function showAlert(){
+        Alert.alert('Are you sure?','Do you really want to delete this inquiry?',[{text:'No'},{text:'Yes, delete',onPress:()=>{
+            deleteFun(id);
             navigation.goBack()
-        }catch(err){console.warn(err),setLoading(false)}
+        }}])
     }
     return(
         <View style={Style.page}>
@@ -37,15 +36,21 @@ export default function Inquiry(props){
             <TopBar icon="chevron-back-outline" text={date} fun={()=>{navigation.goBack()}}/>
             <View style={{marginTop: 10}}>
                 <Text style={styles.page_head}>{title}</Text>
-                <Text style={styles.description}>{inquiry}</Text>
-                <Text style={styles.description}>Date: {date}</Text>
-                <Text style={styles.description}>Subject: {subject}</Text>
-                <Text style={styles.description}>Status: <Text style={{...styles.status}}>{status}</Text></Text>
-                {response !== '' && <Text style={{...styles.description,fontSize:RFValue(14),fontFamily:'p6'}}>Answer: {response}</Text>}
-                <View style={{height:30}}/>
+                <Text style={{...styles.description,fontSize:RFValue(10),color:'grey',marginBottom:8}}>{`${date}, ${subject}`}</Text>
+                <View style={{alignItems:'flex-start',justifyContent:'center'}}>
+                    <Text style={{backgroundColor:status == 'pending'?Colors.yellow:Colors.green,borderRadius:5,paddingHorizontal:10,paddingVertical:1,fontSize:RFValue(11),color:status=='pending'?Colors.blck:Colors.white,fontFamily:'p5'}}>{status}</Text>
+                </View>
+                <View style={{flexDirection:'row',alignItems:'center',marginTop:RFValue(15)}}>
+                    <Image source={{uri:img}} resizeMode="contain" style={{height:RFValue(35),borderRadius:30,marginRight:8,width:RFValue(35)}}/>
+                    <Text style={styles.txt_wrap} selectable={true}>{inquiry}</Text>
+                </View>
+                {response !== '' && <View style={{flexDirection:'row',alignItems:'center',justifyContent:'flex-end',marginTop:RFValue(15)}}>
+                    <Text style={styles.txt_wrap} selectable={true}>{response}</Text>
+                    <Image source={{uri:timg}} resizeMode="contain" style={{height:RFValue(35),borderRadius:30,marginLeft:8,width:RFValue(35)}}/>
+                </View>}
                 {status == 'pending' && 
                 <View style={{height:RFValue(80),alignItems:'center',justifyContent:'center'}}>
-                    {!loading ? <TouchableOpacity activeOpacity={.5} onPress={showAlert} style={{width:'80%'}}><Text style={{...Style.tiny_btn}}>Delete Inquiry</Text></TouchableOpacity> : <ActivityIndicator size="large" color={Colors.blck}/>}
+                    <TouchableOpacity activeOpacity={.5} onPress={showAlert} style={{width:'80%'}}><Text style={{...Style.tiny_btn}}>Delete Inquiry</Text></TouchableOpacity>
                 </View>}
             </View>
         </View>
@@ -53,7 +58,8 @@ export default function Inquiry(props){
 }
 
 const styles = StyleSheet.create({
-    page_head:{fontSize: RFValue(18), maxWidth: '80%', fontFamily: 'p6', color: Colors.primary, marginBottom: 5},
+    page_head:{fontSize: RFValue(16), maxWidth: '80%', fontFamily: 'p6', color: Colors.primary, marginBottom: -2},
     description:{color: Colors.textColor, marginBottom: 3, fontSize: RFValue(15)},
-    status:{fontFamily: 'p5'}
+    status:{fontFamily: 'p5'},
+    txt_wrap:{padding:10,borderRadius:10,backgroundColor:Colors.faded,maxWidth:'85%'}
 })

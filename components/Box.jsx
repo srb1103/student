@@ -26,7 +26,7 @@ export default function Box(props){
     )
 }
 export function LongBox(props){
-    const {heading,text,fun,icon,head1,colors,lg} = props
+    const {heading,text,fun,icon,head1,colors,lg,txt2} = props
     return(
         <TouchableOpacity activeOpacity={.7} onPress={fun} style={{marginBottom:8,overflow:'hidden',borderRadius:15,backgroundColor:Colors.faded,position:'relative'}}>
             <MotiView from={{opacity:0,marginRight:-100}} animate={{opacity:1,marginRight:0}} transition={{type:'timing'}}>
@@ -36,6 +36,7 @@ export function LongBox(props){
                     <View style={{width:'80%'}}>
                         <Text style={styles.lb_heading}>{heading}</Text>
                         {text && <Text style={styles.lb_text}>{text}</Text>}
+                        {txt2 && <Text style={{...styles.lb_text,fontSize:RFValue(8)}}>{txt2}</Text>}
                     </View>
                     {fun && <IonIcon name="chevron-forward" style={styles.lb_icon1}/>}
                     {lg && <LG_relative colors={colors}/>}

@@ -8,16 +8,24 @@ import { LG_full } from '../components/LG'
 import { LongBox } from '../components/Box'
 import { useSelector } from 'react-redux'
 import { useEffect } from 'react'
+import { makeDate, setNum } from '../database/functions'
 
 export default function Assignments_home({navigation}) {
   const [active, setActive] = useState(1)
   const [loading, setLoading] = useState(false)
   let user = useSelector(state=>state.user)
   let {assignments,teachers,courses} = user
+  let d = assignments.sort(function(a,b){
+    let d1 = a.createdOn
+    let d2 = b.createdOn
+    d1 = makeDate(d1)
+    d2 = makeDate(d2)
+    return d2-d1;
+})
   let state = {
-    total: assignments,
-    pending: assignments.filter(e=>e.submitted == 'no'),
-    complete: assignments.filter(e=>e.submitted !== 'no'),
+    total: d,
+    pending: d.filter(e=>e.submitted == 'no'),
+    complete: d.filter(e=>e.submitted !== 'no'),
   }
   let [items,setItems] = useState(state.total)
   function filterData(type){
@@ -28,11 +36,11 @@ export default function Assignments_home({navigation}) {
   }
   function renderAssignment(item){
     let assn = item.item
-    let {title,subjectID} = assn
+    let {title,subjectID,createdOn,id} = assn
     let tchr = teachers.find(e=>e.subjects_allotted.includes(subjectID))
     let course = courses.find(e=>e.id == subjectID)
     return(
-      <LongBox icon="newspaper" heading={title} text={`${course.name} by ${tchr.name}`} fun={()=>navigation.navigate('assignment_view',{sub: course.name,by: tchr.name,assn})}/>
+      <LongBox icon="newspaper" heading={title} text={`${course.name} by ${tchr.name}`} fun={()=>navigation.navigate('assignment_view',{id})} txt2={setNum(createdOn)}/>
     )
   }
   return (

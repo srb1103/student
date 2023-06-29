@@ -41,7 +41,7 @@ export default function Timetable_home({navigation}) {
   function renderPeriod(item){
     let ind = item.index
     let per = item.item
-    let {period,subjectID,teacherID,substitute,time} = per
+    let {period,subjectID,teacherID,time} = per
     let tchr = teachers.find(e=>e.id == teacherID)
     return(
       <View style={{maringBottom:5}}><LongBox head1={period} heading={subjectID.name} text={`Teacher: ${tchr.name}, Timing: ${time.from}-${time.to}`} fun={()=>navigation.navigate('course_view',{subject:subjectID})}/></View>

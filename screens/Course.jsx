@@ -13,35 +13,57 @@ export default function Course(props){
     let user = useSelector(state=>state.user)
     let {attendance} = user
     let {subject,home} = route.params
-    let {id,name,topics} = subject
+    let {id,name,chapters} = subject
     let state = {
-        completed: topics.filter(e=>e.status == 'complete'),
-        pending: topics.filter(e=>e.status == 'pending'),
-        current: topics.find(e=>e.status == 'current'),
+        // completed: topics.filter(e=>e.status == 'complete'),
+        // pending: topics.filter(e=>e.status == 'pending'),
+        // current: topics.find(e=>e.status == 'current'),
     }
-    let next = null
-    state.pending.forEach((e,i)=>{
-        if(i == 0){next = e}
-    })
+    // let next = null
+    // state.pending.forEach((e,i)=>{
+    //     if(i == 0){next = e}
+    // })
     let attn = attendance.filter(e=>e.subject == id)
     let pr = attn.filter(e=>e.status == 'present')
     let attn_percent = Math.floor((pr.length/attn.length)*100)
-    let percent = Math.floor((state.completed.length/topics.length)*100)
-    let renderTopic = (item)=>{
-        let topic = item.item
-        let index = item.index
-        let l = topics.length
-        return(
-            <View style={{marginLeft:index == 0?15:0,marginRight:index == (l-1) ? 15 : 6,width:260}}>
-                <LongBox icon="document-text" heading={topic.name} text={`Completed on: ${topic.date}`}/>
-            </View>
-        )
+    let tops = []
+    chapters.forEach(c=>{
+        let {topics} = c
+            topics.forEach(t=>{
+                let {id,status} = t
+                let ind = tops.findIndex(e=>e.id == id)
+                if(ind < 0){tops.push({id,status})}
+            })
+    })
+    let ttl_topics = tops.length
+    let complete = 0
+    tops.forEach(t=>{
+        let {status} = t
+        if(status == 'complete'){
+            complete += 1
+        }
+    })
+    let progress = ttl_topics > 0 ? Math.round((complete/ttl_topics)*100) : 0
+    if(isNaN(attn_percent)){
+        attn_percent = '0'
+    }
+    if(isNaN(progress)){
+        progress = '0'
+    }
+    let renderChapter = (item)=>{
+        let itm = item.item
+        let {count,name,topics} = itm
+        let ttl = topics.length
+        let str = ttl == 1 ? 'topic': 'topics'
+        let c = topics.filter(e=>e.status === 'complete').length
+        let progress = ttl > 0 ? Math.floor((c/ttl)*100) : 0
+        return <LongBox icon="document-text" heading={`${count}. ${name}`} text={`${ttl} ${str}`} txt2={`${progress}% complete`} fun={()=>navigation.navigate('chapter',{topics,chapter_name:name})}/>
     }
     return(
         <View style={{...Style.page,paddingHorizontal:0}}>
             <LG_full/>
             <View style={{paddingHorizontal:15}}>
-                <TopBar icon="chevron-back-outline" text={name} fun={()=>{home ? navigation.navigate('homepage'): navigation.navigate('courses',{screen:'course'})}}/>
+                <TopBar icon="chevron-back-outline" text="Course Content" txt2={name} fun={()=>{home ? navigation.navigate('homepage'): navigation.navigate('courses',{screen:'course'})}}/>
                 <View style={{marginTop: 10}}/>
                 <View style={styles.course_stats}>
                     <View style={styles.course_stat}>
@@ -50,22 +72,14 @@ export default function Course(props){
                     </View>
                     <View style={styles.course_stat}>
                         <Text style={styles.cs_label}>Course Completed</Text>
-                        <Text style={styles.cs_ans}>{`${percent}%`}</Text>
+                        <Text style={styles.cs_ans}>{`${progress}%`}</Text>
                     </View>
                 </View>
-                {state.current && <View style={styles.cc_view}>
-                    <Text style={styles.cc_name}>Current Topic</Text>
-                    <LongBox icon="document-text-outline" heading={state.current.name} text={`Started on: 25/05/2022`}/>
-                </View>}
-                {next && <View style={styles.cc_view}>
-                    <Text style={styles.cc_name}>Next Topic</Text>
-                    <LongBox icon="document-text-outline" heading={next.name}/>
-                </View>}
-                <View style={styles.cc_view}>
-                    <Text style={styles.cc_name}>Completed Topics</Text>
-                </View>
+                <View style={{height:10}}/>
+                <Text style={Style.btn_text}>Chapters in the Course</Text>
+                <View style={{height:5}}/>
+                <FlatList data={chapters} showsVerticalScrollIndicator={false} overScrollMode='never' keyExtractor={(item,index)=>index.toString()} renderItem={renderChapter}/>
             </View>
-            <FlatList data={state.completed} horizontal showsHorizontalScrollIndicator={false} overScrollMode='never' keyExtractor={(item,index)=>index.toString()} renderItem={renderTopic}/>
         </View>
     )
 }

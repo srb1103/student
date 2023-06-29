@@ -40,23 +40,26 @@ export default function Login() {
             try{
                 let students = await fetch_data('students')
                 students = students.filter(e=>e.instituteID == iid)
-                let st = students.find(e=>e.admissionNo == username)
+                let st = students.find(e=>e.username == username)
                 if(st){
                     if(st.password == ''){
                         if(st.id == password){
                             updateDet(st)
                         }else{
                             Alert.alert('Error','Please enter valid password',[{text:'Okay'}])
+                            setLoading(false)
                         }
                     }else{
                         if(st.password == password){
                             updateDet(st)
                         }else{
                             Alert.alert(`Error`,`Please enter valid password`,[{text:'Okay'}])
+                            setLoading(false)
                         }
                     }
                 }else{
-                    Alert.alert('Error','Invalid admission number',[{text:'Okay'}])
+                    Alert.alert('Error','Invalid username',[{text:'Okay'}])
+                    setLoading(false)
                 }
             }catch(err){
                 console.log(err.message)
@@ -89,7 +92,7 @@ export default function Login() {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.form_wrap}>
             <Text style={styles.head}>Login</Text><View style={{height:20}}/>
-            <InputField val='' placeholder='Enter Admission Number' name='username' onChangeFun={addItem}/>
+            <InputField val='' placeholder='Enter Username' name='username' onChangeFun={addItem}/>
             <InputField val='' placeholder='Enter Password' name='password' onChangeFun={addItem} password iseye/><View style={{height:20}}/>
             <View style={{height:RFValue(80),alignItems:'center',justifyContent:'center'}}>
                 {!loading ? <TouchableOpacity activeOpacity={.5} onPress={onSubmit} style={{width:width*.8}}><Text style={Style.form_btn}>Login</Text></TouchableOpacity> : <ActivityIndicator size="large" color={Colors.blck}/>}
