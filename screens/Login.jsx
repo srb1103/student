@@ -120,5 +120,5 @@ const styles = StyleSheet.create({
         fontSize: RFValue(25),fontFamily:'p6',textAlign:'center'
     },
     form_wrap:{padding:20,borderRadius:20,backgroundColor:Colors.white,width:'90%',zIndex:2,position:'relative'},
-    top_circle:{backgroundColor:Colors.blck,height,width:height,position:'absolute',top:-width,left:-width*.49,borderRadius:height,zIndex:1}
+    top_circle:{backgroundColor:Colors.blck,height,width:height,position:'absolute',top:-width,left:-width*.49,borderRadius:height,zIndex:-1}
 })

@@ -2,7 +2,7 @@
   "expo": {
     "name": "HIDA",
     "slug": "HIDA",
-    "version": "11.0.1",
+    "version": "11.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -20,13 +20,13 @@
     
     "ios": {
       "bundleIdentifier": "in.kotcode.hida",
-      "buildNumber": "11.0.1",
+      "buildNumber": "11.0.2",
       "supportsTablet": true
     },
     "android": {
       "package": "in.kotcode.hida",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 1101,
+      "versionCode": 1102,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#f3f7ea"
